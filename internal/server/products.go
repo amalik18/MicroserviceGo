@@ -10,7 +10,7 @@ func (server *EchoServer) GetAllProducts(ctx echo.Context) error {
 	products, err := server.DB.GetAllProducts(ctx.Request().Context(), vendorId)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err)
+		return ctx.JSON(http.StatusInternalServerError, err)
 	}
 	return ctx.JSON(http.StatusOK, products)
 }

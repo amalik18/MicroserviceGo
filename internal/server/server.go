@@ -51,6 +51,9 @@ func (server *EchoServer) registerRoutes() {
 
 	vendorGroup := server.echo.Group("/vendors")
 	vendorGroup.GET("", server.GetAllVendors)
+
+	serviceGroup := server.echo.Group("/services")
+	serviceGroup.GET("", server.GetAllServices)
 }
 
 func (server *EchoServer) Readiness(ctx echo.Context) error {
