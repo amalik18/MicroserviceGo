@@ -1,6 +1,8 @@
 package database
 
 import (
+	"MicroserviceGo/internal/models"
+	"context"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,16 +12,19 @@ import (
 
 type DatabaseClient interface {
 	Ready() bool
+	GetAllCustomers(ctx context.Context, emailAddress string) ([]models.Customer, error)
+	GetAllProducts(ctx context.Context, vendorId string) ([]models.Product, error)
+	GetAllVendors(ctx context.Context) ([]models.Vendors, error)
 }
 
 type Client struct {
 	DB *gorm.DB
 }
 
-func (c Client) Ready() bool {
+func (client Client) Ready() bool {
 	//TODO implement me
 	var ready string
-	tx := c.DB.Raw("SELECT 1 as ready").Scan(&ready)
+	tx := client.DB.Raw("SELECT 1 as ready").Scan(&ready)
 	if tx.Error != nil {
 		return false
 	}

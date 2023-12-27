@@ -3,6 +3,7 @@ package server
 import (
 	"MicroserviceGo/internal/database"
 	"MicroserviceGo/internal/models"
+	"errors"
 	"github.com/labstack/echo/v4"
 	"log"
 	"net/http"
@@ -12,6 +13,8 @@ type Server interface {
 	Start() error
 	Readiness(ctx echo.Context) error
 	Liveness(ctx echo.Context) error
+	GetAllCustomers(ctx echo.Context) error
+	GetAllProducts(ctx echo.Context) error
 }
 type EchoServer struct {
 	echo *echo.Echo
@@ -29,7 +32,7 @@ func NewEchoServer(db database.DatabaseClient) Server {
 }
 
 func (server *EchoServer) Start() error {
-	if err := server.echo.Start(":8080"); err != nil && err != http.ErrServerClosed {
+	if err := server.echo.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("Server shutdown occurred: %s", err)
 		return err
 	}
@@ -39,6 +42,15 @@ func (server *EchoServer) Start() error {
 func (server *EchoServer) registerRoutes() {
 	server.echo.GET("/readiness", server.Readiness)
 	server.echo.GET("/liveness", server.Liveness)
+
+	customerGroup := server.echo.Group("/customers")
+	customerGroup.GET("", server.GetAllCustomers)
+
+	productGroup := server.echo.Group("/products")
+	productGroup.GET("", server.GetAllProducts)
+
+	vendorGroup := server.echo.Group("/vendors")
+	vendorGroup.GET("", server.GetAllVendors)
 }
 
 func (server *EchoServer) Readiness(ctx echo.Context) error {
