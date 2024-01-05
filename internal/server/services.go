@@ -1,6 +1,8 @@
 package server
 
 import (
+	"MicroserviceGo/internal/dberrors"
+	"MicroserviceGo/internal/models"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -11,4 +13,21 @@ func (server *EchoServer) GetAllServices(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, err)
 	}
 	return ctx.JSON(http.StatusOK, services)
+}
+
+func (server *EchoServer) AddService(ctx echo.Context) error {
+	service := new(models.Services)
+	if err := ctx.Bind(service); err != nil {
+		return ctx.JSON(http.StatusUnsupportedMediaType, err)
+	}
+	service, err := server.DB.AddService(ctx.Request().Context(), service)
+	if err != nil {
+		switch err.(type) {
+		case *dberrors.ConflicError:
+			return ctx.JSON(http.StatusConflict, err)
+		default:
+			return ctx.JSON(http.StatusInternalServerError, err)
+		}
+	}
+	return ctx.JSON(http.StatusCreated, service)
 }

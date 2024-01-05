@@ -1,4 +1,9 @@
 .idea/
+.DS_Store
 MicroserviceGo.iml
 db_server_aws.pem
 MicroserviceGo
+config
+credentials
+creds
+main

@@ -14,7 +14,13 @@ type Server interface {
 	Readiness(ctx echo.Context) error
 	Liveness(ctx echo.Context) error
 	GetAllCustomers(ctx echo.Context) error
+	AddCustomer(ctx echo.Context) error
 	GetAllProducts(ctx echo.Context) error
+	AddProduct(ctx echo.Context) error
+	GetAllServices(ctx echo.Context) error
+	AddService(ctx echo.Context) error
+	GetAllVendors(ctx echo.Context) error
+	AddVendor(ctx echo.Context) error
 }
 type EchoServer struct {
 	echo *echo.Echo
@@ -45,15 +51,19 @@ func (server *EchoServer) registerRoutes() {
 
 	customerGroup := server.echo.Group("/customers")
 	customerGroup.GET("", server.GetAllCustomers)
+	customerGroup.POST("", server.AddCustomer)
 
 	productGroup := server.echo.Group("/products")
 	productGroup.GET("", server.GetAllProducts)
+	productGroup.POST("", server.AddProduct)
 
 	vendorGroup := server.echo.Group("/vendors")
 	vendorGroup.GET("", server.GetAllVendors)
+	vendorGroup.POST("", server.AddVendor)
 
 	serviceGroup := server.echo.Group("/services")
 	serviceGroup.GET("", server.GetAllServices)
+	serviceGroup.POST("", server.AddService)
 }
 
 func (server *EchoServer) Readiness(ctx echo.Context) error {

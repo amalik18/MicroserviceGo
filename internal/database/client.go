@@ -13,9 +13,14 @@ import (
 type DatabaseClient interface {
 	Ready() bool
 	GetAllCustomers(ctx context.Context, emailAddress string) ([]models.Customer, error)
+	AddCustomer(ctx context.Context, customer *models.Customer) (*models.Customer, error)
+
 	GetAllProducts(ctx context.Context, vendorId string) ([]models.Product, error)
+	AddProduct(ctx context.Context, product *models.Product) (*models.Product, error)
 	GetAllVendors(ctx context.Context) ([]models.Vendors, error)
+	AddVendor(ctx context.Context, vendor *models.Vendors) (*models.Vendors, error)
 	GetAllServices(ctx context.Context) ([]models.Services, error)
+	AddService(ctx context.Context, service *models.Services) (*models.Services, error)
 }
 
 type Client struct {
