@@ -31,3 +31,17 @@ func (server *EchoServer) AddService(ctx echo.Context) error {
 	}
 	return ctx.JSON(http.StatusCreated, service)
 }
+
+func (server *EchoServer) GetServiceById(ctx echo.Context) error {
+	Id := ctx.Param("servicesId")
+	service, err := server.DB.GetServiceById(ctx.Request().Context(), Id)
+	if err != nil {
+		switch err.(type) {
+		case *dberrors.NotFoundError:
+			return ctx.JSON(http.StatusNotFound, err)
+		default:
+			return ctx.JSON(http.StatusInternalServerError, err)
+		}
+	}
+	return ctx.JSON(http.StatusOK, service)
+}

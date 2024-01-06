@@ -29,3 +29,22 @@ func (client Client) AddProduct(ctx context.Context, product *models.Product) (*
 	}
 	return product, nil
 }
+
+func (client Client) GetProductById(ctx context.Context, Id string) (*models.Product, error) {
+	product := &models.Product{}
+	result := client.DB.WithContext(ctx).
+		Where(models.Product{
+			ProductId: Id,
+		}).
+		First(&product)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, &dberrors.NotFoundError{
+				Entity: "products",
+				Id:     Id,
+			}
+		}
+		return nil, result.Error
+	}
+	return product, nil
+}

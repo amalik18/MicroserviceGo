@@ -27,3 +27,22 @@ func (client Client) AddVendor(ctx context.Context, vendor *models.Vendors) (*mo
 	}
 	return vendor, nil
 }
+
+func (client Client) GetVendorById(ctx context.Context, Id string) (*models.Vendors, error) {
+	vendor := &models.Vendors{}
+	result := client.DB.WithContext(ctx).
+		Where(models.Vendors{
+			VendorId: Id,
+		}).
+		Find(&vendor)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, &dberrors.NotFoundError{
+				Entity: "vendors",
+				Id:     Id,
+			}
+		}
+		return nil, result.Error
+	}
+	return vendor, nil
+}

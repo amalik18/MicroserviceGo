@@ -29,3 +29,22 @@ func (client Client) AddCustomer(ctx context.Context, customer *models.Customer)
 	}
 	return customer, nil
 }
+
+func (client Client) GetCustomerById(ctx context.Context, Id string) (*models.Customer, error) {
+	customer := &models.Customer{}
+	result := client.DB.WithContext(ctx).
+		Where(&models.Customer{
+			CustomerID: Id,
+		}).
+		First(&customer)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, &dberrors.NotFoundError{
+				Entity: "customer",
+				Id:     Id,
+			}
+		}
+		return nil, result.Error
+	}
+	return customer, nil
+}

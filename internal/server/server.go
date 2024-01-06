@@ -13,14 +13,22 @@ type Server interface {
 	Start() error
 	Readiness(ctx echo.Context) error
 	Liveness(ctx echo.Context) error
+
 	GetAllCustomers(ctx echo.Context) error
 	AddCustomer(ctx echo.Context) error
+	GetCustomerById(ctx echo.Context) error
+
 	GetAllProducts(ctx echo.Context) error
 	AddProduct(ctx echo.Context) error
+	GetProductById(ctx echo.Context) error
+
 	GetAllServices(ctx echo.Context) error
 	AddService(ctx echo.Context) error
+	GetServiceById(ctx echo.Context) error
+
 	GetAllVendors(ctx echo.Context) error
 	AddVendor(ctx echo.Context) error
+	GetVendorById(ctx echo.Context) error
 }
 type EchoServer struct {
 	echo *echo.Echo
@@ -32,7 +40,6 @@ func NewEchoServer(db database.DatabaseClient) Server {
 		echo: echo.New(),
 		DB:   db,
 	}
-
 	server.registerRoutes()
 	return server
 }
@@ -52,18 +59,22 @@ func (server *EchoServer) registerRoutes() {
 	customerGroup := server.echo.Group("/customers")
 	customerGroup.GET("", server.GetAllCustomers)
 	customerGroup.POST("", server.AddCustomer)
+	customerGroup.GET("/:id", server.GetCustomerById)
 
 	productGroup := server.echo.Group("/products")
 	productGroup.GET("", server.GetAllProducts)
 	productGroup.POST("", server.AddProduct)
+	productGroup.GET("/:productId", server.GetProductById)
 
 	vendorGroup := server.echo.Group("/vendors")
 	vendorGroup.GET("", server.GetAllVendors)
 	vendorGroup.POST("", server.AddVendor)
+	vendorGroup.GET("/:vendorId", server.GetVendorById)
 
 	serviceGroup := server.echo.Group("/services")
 	serviceGroup.GET("", server.GetAllServices)
 	serviceGroup.POST("", server.AddService)
+	serviceGroup.GET("/:servicesId", server.GetServiceById)
 }
 
 func (server *EchoServer) Readiness(ctx echo.Context) error {
