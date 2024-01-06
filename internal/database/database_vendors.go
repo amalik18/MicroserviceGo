@@ -31,10 +31,10 @@ func (client Client) AddVendor(ctx context.Context, vendor *models.Vendors) (*mo
 func (client Client) GetVendorById(ctx context.Context, Id string) (*models.Vendors, error) {
 	vendor := &models.Vendors{}
 	result := client.DB.WithContext(ctx).
-		Where(models.Vendors{
+		Where(&models.Vendors{
 			VendorId: Id,
 		}).
-		Find(&vendor)
+		First(&vendor)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, &dberrors.NotFoundError{

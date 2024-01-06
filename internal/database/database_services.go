@@ -31,7 +31,7 @@ func (client Client) AddService(ctx context.Context, service *models.Services) (
 func (client Client) GetServiceById(ctx context.Context, Id string) (*models.Services, error) {
 	service := &models.Services{}
 	result := client.DB.WithContext(ctx).
-		Where(models.Services{
+		Where(&models.Services{
 			ServicesId: Id,
 		}).
 		First(&service)

@@ -33,7 +33,7 @@ func (server *EchoServer) AddVendor(ctx echo.Context) error {
 }
 
 func (server *EchoServer) GetVendorById(ctx echo.Context) error {
-	Id := ctx.Param("servicesId")
+	Id := ctx.Param("vendorId")
 	vendor, err := server.DB.GetVendorById(ctx.Request().Context(), Id)
 	if err != nil {
 		switch err.(type) {

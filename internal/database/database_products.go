@@ -33,7 +33,7 @@ func (client Client) AddProduct(ctx context.Context, product *models.Product) (*
 func (client Client) GetProductById(ctx context.Context, Id string) (*models.Product, error) {
 	product := &models.Product{}
 	result := client.DB.WithContext(ctx).
-		Where(models.Product{
+		Where(&models.Product{
 			ProductId: Id,
 		}).
 		First(&product)
